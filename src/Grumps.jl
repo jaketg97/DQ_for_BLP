@@ -64,7 +64,7 @@ function __init__()
     printstyled( "This is Grumps version $Grumps_version ($lastversiondate)\n\n\n"; color= 206, bold = true ); 
     versionage = Day( today() - lastversiondate ) |> Dates.value
     if  versionage ≥ 60
-        zebraprint( "Your version of Grumps is $versionage days old: please check for updates regularly!\n\n\n")
+        zebraprint( "Note that this is a custom version, not the latest release\n" )
     end
 
 end
