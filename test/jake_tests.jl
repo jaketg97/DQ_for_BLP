@@ -1,22 +1,29 @@
 using Pkg
-Pkg.activate("..")  # Activate the current environment
-Pkg.develop(path="/Users/jacobgosselin/Documents(local)/GitHub/Grumps.jl")  # Develop the local package
-
-using Grumps  # Now you can use the Grumps package
+using MAT
 using Test
 using LinearAlgebra
 using Aqua
 using LinearAlgebra
 using Aqua
 using Random
+using DelimitedFiles
+cd("/Users/jacobgosselin/Documents(local)/GitHub/")
+
+# # load local version
+# Pkg.activate("/Users/jacobgosselin/Documents(local)/GitHub/Grumps.jl")
+
+# # Add MAT to the Grumps environment
+# Pkg.add("MAT")
+
+using Grumps
 
 # Define program to get data...
 function getinputs(meth)
     s = Sources(                                                            
-      consumers = "test/testdata/example_consumers.csv",
-      products = "test/testdata/example_products.csv",
-      marketsizes = "test/testdata/example_marketsizes.csv",
-      draws = "test/testdata/example_draws.csv"  
+      consumers = "Grumps.jl/test/testdata/example_consumers.csv",
+      products = "Grumps.jl/test/testdata/example_products.csv",
+      marketsizes = "Grumps.jl/test/testdata/example_marketsizes.csv",
+      draws = "Grumps.jl/test/testdata/example_draws.csv"  
     )
     v = Variables( 
         interactions =  [                                                   
@@ -54,6 +61,10 @@ memblock    = Grumps.MemBlock( d,  OptimizationOptions())
 s           = Grumps.Space( e, d, o, memblock )
 microspace_test = s.marketspace[1].microspace
 microdata_test = d.marketdata[1].microdata
-# Grumps.FillZXθ!(getθcoef( sol ), e, microdata_test, o, microspace_test )
-# Grumps.ChoiceProbabilities!(microspace_test, microdata_test, o, getδcoef(sol)[1:10])
-# choice_probs = microspace_test.πi
+Grumps.FillZXθ!(θsolcler, e, microdata_test, o, microspace_test )
+Grumps.ChoiceProbabilities!(microspace_test, microdata_test, o, δsolcler[1:10])
+choice_probs = microspace_test.πi
+
+Grumps.__init__()
+# write the choice probabilities to a file
+writedlm("Grumps.jl/test/jake_tests_output/choice_probs_og.csv", choice_probs, ',')
