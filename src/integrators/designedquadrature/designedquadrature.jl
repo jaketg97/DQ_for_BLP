@@ -9,7 +9,7 @@ function DefaultMicroIntegrator( n :: Int, T = F64; options = nothing )
 end
 
 function NodesWeightsGlobal( ms :: DefaultMicroIntegrator{T}, d :: Int,  rng :: AbstractRNG ) where {T<:Flt}
-    n, w = DQ_readrules(d, 5, 25)                                                 # compute Gauss Hermite nodes and weights in a single dimension
+    n, w = DQ_readrules(d, 5, 100)                                                 # compute Gauss Hermite nodes and weights in a single dimension
     return GrumpsNodesWeights{T}(n, w)
  end
 

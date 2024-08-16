@@ -9,11 +9,11 @@ using Random
 using DelimitedFiles
 cd("/Users/jacobgosselin/Documents(local)/GitHub/")
 
-# # load local version
-# Pkg.activate("/Users/jacobgosselin/Documents(local)/GitHub/Grumps.jl")
+# load local version
+Pkg.activate("/Users/jacobgosselin/Documents(local)/GitHub/Grumps.jl")
 
-# # Add MAT to the Grumps environment
-# Pkg.add("MAT")
+# Add MAT to the Grumps environment
+Pkg.add("MAT")
 
 using Grumps
 
@@ -67,4 +67,4 @@ choice_probs = microspace_test.πi
 
 Grumps.__init__()
 # write the choice probabilities to a file
-writedlm("Grumps.jl/test/jake_tests_output/choice_probs_og.csv", choice_probs, ',')
+writedlm("Grumps.jl/test/jake_tests_output/choice_probs_5_100.csv", choice_probs, ',')
