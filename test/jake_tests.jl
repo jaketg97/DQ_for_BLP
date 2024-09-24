@@ -52,19 +52,62 @@ function getinputs(meth)
     return θsolcler, βsolcler, δsolcler, d
 end
 
-# Get necessary objects and calculate choice probabilities
-meth = "cler" # use the CLER method
-θsolcler, βsolcler, δsolcler, d = getinputs(meth)
-e = Estimator( meth )                                                     
-o = OptimizationOptions()
-memblock    = Grumps.MemBlock( d,  OptimizationOptions())
-s           = Grumps.Space( e, d, o, memblock )
-microspace_test = s.marketspace[1].microspace
-microdata_test = d.marketdata[1].microdata
-Grumps.FillZXθ!(θsolcler, e, microdata_test, o, microspace_test )
-Grumps.ChoiceProbabilities!(microspace_test, microdata_test, o, δsolcler[1:10])
-choice_probs = microspace_test.πi
 
-Grumps.__init__()
-# write the choice probabilities to a file
-writedlm("Grumps.jl/test/jake_tests_output/choice_probs_5_100.csv", choice_probs, ',')
+function getsol(meth)
+    s = Sources(                                                            
+      consumers = "Grumps.jl/test/testdata/example_consumers.csv",
+      products = "Grumps.jl/test/testdata/example_products.csv",
+      marketsizes = "Grumps.jl/test/testdata/example_marketsizes.csv",
+      draws = "Grumps.jl/test/testdata/example_draws.csv"  
+    )
+    v = Variables( 
+        interactions =  [                                                   
+            :income :constant; 
+            :income :ibu; 
+            :age :ibu
+            ],
+        randomcoefficients =  [:ibu; :abv],     
+        regressors =  [ :constant; :ibu; :abv ],      
+        instruments = [ :constant; :ibu; :abv; :IVgh_ibu; :IVgh_abv ], 
+        microinstruments = [                                                
+            :income :constant; 
+            :income :ibu; 
+            :age :ibu
+            ],
+        outsidegood = "product 11"                                          
+    )
+    
+    e = Estimator( meth )                                                     
+
+    d = Data( e, s, v; replicable = true ) 
+    sol = grumps!( e, d )           
+    return sol
+end
+
+test_probs = 0
+test_sol = 1
+
+if test_probs == 1 
+    # Get necessary objects and calculate choice probabilities
+    meth = "cler" # use the CLER method
+    θsolcler, βsolcler, δsolcler, d = getinputs(meth)
+    e = Estimator( meth )                                                     
+    o = OptimizationOptions()
+    memblock    = Grumps.MemBlock( d,  OptimizationOptions())
+    s           = Grumps.Space( e, d, o, memblock )
+    microspace_test = s.marketspace[1].microspace
+    microdata_test = d.marketdata[1].microdata
+    Grumps.FillZXθ!(θsolcler, e, microdata_test, o, microspace_test )
+    Grumps.ChoiceProbabilities!(microspace_test, microdata_test, o, δsolcler[1:10])
+    choice_probs = microspace_test.πi
+
+    Grumps.__init__()
+    # write the choice probabilities to a file
+    writedlm("Grumps.jl/test/jake_tests_output/choice_probs_10_50.csv", choice_probs, ',')
+end
+
+if test_sol == 1
+    Grumps.__init__()
+    result = getsol("cler")
+    print(result)
+end
